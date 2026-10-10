@@ -1,0 +1,25 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import vm from 'node:vm';
+import {readFileSync} from 'node:fs';
+import {createHash,createHmac,randomUUID,pbkdf2Sync} from 'node:crypto';
+import ts from 'typescript';
+
+function setup(){
+ const props=new Map(),cache=new Map(),sheets=new Map();let failFlush=false;
+ class Sheet{rows=[];constructor(name){this.name=name;}getLastRow(){return this.rows.length;}appendRow(row){this.rows.push([...row]);return this;}clearContents(){this.rows=[];return this;}setFrozenRows(){}getDataRange(){return {getValues:()=>this.rows.length?structuredClone(this.rows):[['']]};}getRange(r,c,n,m){if(typeof r==='string')[r,c,n,m]=[1,10,2,2];return {getValues:()=>Array.from({length:n},(_,i)=>Array.from({length:m},(_,j)=>this.rows[r+i-1]?.[c+j-1]??'')),clearContent:()=>{for(let i=0;i<n;i++)for(let j=0;j<m;j++)if(this.rows[r+i-1])this.rows[r+i-1][c+j-1]='';},setValues:values=>{for(let i=0;i<values.length;i++){this.rows[r+i-1]??=[];for(let j=0;j<values[i].length;j++)this.rows[r+i-1][c+j-1]=values[i][j];}}};}}
+ const book={getSheetByName:name=>sheets.get(name),insertSheet:name=>{const sheet=new Sheet(name);sheets.set(name,sheet);return sheet;}};
+ const context=vm.createContext({console:{error(){}},Date,Intl,JSON,Utilities:{getUuid:randomUUID,DigestAlgorithm:{SHA_256:'sha256'},Charset:{UTF_8:'utf8'},computeDigest:(_,value)=>[...createHash('sha256').update(value).digest()],computeHmacSha256Signature:(value,key)=>[...createHmac('sha256',key).update(value).digest()]},PropertiesService:{getScriptProperties:()=>({getProperty:key=>props.get(key)??null,setProperty:(key,value)=>props.set(key,value)})},CacheService:{getScriptCache:()=>({get:key=>cache.get(key)??null,put:(key,value)=>cache.set(key,value),remove:key=>cache.delete(key)})},LockService:{getScriptLock:()=>({tryLock:()=>true,waitLock(){},releaseLock(){}})},SpreadsheetApp:{openById:()=>book,flush:()=>{if(failFlush){failFlush=false;throw new Error('lost response');}}}});
+ const source=readFileSync(new URL('../lib/rewards.ts',import.meta.url),'utf8').replace(/export /g,'').replace('structuredClone(current)','JSON.parse(JSON.stringify(current))');
+ const model=ts.transpileModule(source,{compilerOptions:{target:ts.ScriptTarget.ES2020}}).outputText;
+ vm.runInContext('function model_(){'+model+';return {initialState,applyCommand,scores,classSeats,activeSemester};}',context);vm.runInContext(readFileSync(new URL('../apps-script/Code.gs',import.meta.url),'utf8'),context);
+ const salt='a'.repeat(64),key=pbkdf2Sync('test-password-only',salt,100000,32,'sha256').toString('hex');props.set('PASSWORD_VERIFIER',salt+':'+key);context.initialize_();
+ const rpc=request=>JSON.parse(JSON.stringify(context.classroomRpc(request)));const auth=()=>{const challenge=rpc({op:'challenge',purpose:'login'});return rpc({op:'login',id:challenge.body.id,proof:createHmac('sha256',key).update(challenge.body.id+'|login|').digest('hex')});};return {rpc,auth,sheets,failNextFlush:()=>failFlush=true};
+}
+const cmd=(type,extra={})=>({id:randomUUID(),date:'2026-10-10',type,...extra});
+
+test('GAS requires authentication and journals multi-class operations',()=>{const host=setup();assert.equal(host.rpc({op:'read'}).status,401);const token=host.auth().body.token;let revision=0;const write=command=>{const response=host.rpc({op:'write',token,revision,command});assert.equal(response.status,200);revision=response.body.revision;return response.body;};const semester=cmd('semester',{label:'115學年度第一學期'}),room=cmd('class',{semesterId:semester.id,name:'五年一班',studentCount:30,displayMode:'seat'});write(semester);write(room);write(cmd('reward',{classId:room.id,students:[1],amount:3}));assert.equal(host.rpc({op:'read',token}).body.state.actions.length,1);const row=host.sheets.get('班級總分').rows.find(item=>item[1]==='五年一班'&&item[3]===1);assert.equal(row[7],3);});
+
+test('GAS retries do not duplicate a reward after a lost response',()=>{const host=setup(),token=host.auth().body.token;let revision=0;const write=command=>{const response=host.rpc({op:'write',token,revision,command});if(response.status===200)revision=response.body.revision;return response;};const semester=cmd('semester',{label:'115學年度第一學期'}),room=cmd('class',{semesterId:semester.id,name:'五年一班',studentCount:30,displayMode:'seat'});assert.equal(write(semester).status,200);assert.equal(write(room).status,200);const reward=cmd('reward',{classId:room.id,students:[1],amount:5}),request={op:'write',token,revision,command:reward};host.failNextFlush();assert.equal(host.rpc(request).status,503);const retry=host.rpc(request);assert.equal(retry.status,200);assert.equal(retry.body.state.actions.length,1);});
+
+test('GAS rejects stale revisions from another device',()=>{const host=setup(),token=host.auth().body.token,semester=cmd('semester',{label:'115學年度第一學期'});assert.equal(host.rpc({op:'write',token,revision:0,command:semester}).status,200);assert.equal(host.rpc({op:'write',token,revision:0,command:cmd('newSemester',{sourceSemesterId:semester.id,label:'115學年度第二學期'})}).status,409);});

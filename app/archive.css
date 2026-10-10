@@ -1,0 +1,2 @@
+.class-list-tools{display:flex;align-items:center;gap:18px;color:#667a75}.class-card.archived{opacity:.72}.card-edit.restore{background:#e4f1ec;color:#176b5b}
+@media(max-width:750px){.class-list-tools{width:100%;justify-content:space-between;flex-wrap:wrap}}
