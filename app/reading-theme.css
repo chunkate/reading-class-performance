@@ -1,0 +1,113 @@
+/* 閱讀課主題：取材自柔和森林、奶油色與童趣動物插畫的原創介面。 */
+:root{
+  --background:#f7f2df;
+  --foreground:#544a42;
+  --primary:#5f9472;
+  --primary-foreground:#fffdf5;
+  --secondary:#f5d7c9;
+  --secondary-foreground:#6a4c43;
+  --muted:#e7efe0;
+  --muted-foreground:#6f7569;
+  --accent:#f5c6cb;
+  --accent-foreground:#70464b;
+  --border:#ddcfba;
+  --input:#d8c7ae;
+  --ring:#83ab86;
+  --card:#fffdf7;
+  --card-foreground:#544a42;
+  --popover:#fffdf7;
+  --popover-foreground:#544a42;
+}
+
+body{
+  color:#544a42;
+  background:
+    radial-gradient(circle at 8% 12%,#dbe9bd 0 86px,transparent 88px),
+    radial-gradient(circle at 92% 18%,#c7dfca 0 105px,transparent 107px),
+    radial-gradient(circle at 88% 88%,#f5c8c1 0 82px,transparent 84px),
+    linear-gradient(180deg,#edf4dc 0%,#fff8e8 42%,#f8efd9 100%);
+  background-attachment:fixed;
+  font-family:ui-rounded,"Microsoft JhengHei","PingFang TC",Arial,sans-serif;
+}
+
+button{transition:transform .14s ease,box-shadow .14s ease,background-color .14s ease}
+button:not(:disabled):hover{transform:translateY(-2px)}
+button:not(:disabled):active{transform:translateY(1px)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #efb9b4;outline-offset:2px}
+
+.portal-shell{position:relative}
+.portal-shell::before,.portal-shell::after{position:fixed;z-index:-1;pointer-events:none;font-size:38px;opacity:.58}
+.portal-shell::before{content:"🌿  ✿";left:22px;bottom:24px;transform:rotate(-9deg)}
+.portal-shell::after{content:"✿  🍃";right:24px;top:104px;transform:rotate(8deg)}
+.portal-header{
+  position:relative;
+  overflow:hidden;
+  color:#514840;
+  border:2px solid #bfd1b2;
+  background:
+    radial-gradient(circle at 84% 24%,#fff6ed 0 38px,transparent 40px),
+    linear-gradient(125deg,#dceac6 0%,#cae2d6 48%,#f9dfd4 100%);
+  box-shadow:0 9px 0 #c7d5b7,0 24px 56px #6d7c5724;
+}
+.portal-header::after{content:"🐱  📖  🌸";position:absolute;right:34px;bottom:18px;font-size:34px;letter-spacing:7px;opacity:.82;pointer-events:none}
+.portal-header>div:first-child{position:relative;z-index:1}
+.portal-header .eyebrow{color:#617a5f}
+.portal-header h1{color:#55483f;text-shadow:0 2px #fff9ed}
+.portal-header p:last-child{color:#6c645a;max-width:560px}
+.cloud-pill{position:relative;z-index:1;color:#4f765b;border:1px solid #afc9b1;background:#fffdf6;box-shadow:0 3px 0 #bfd2bc}
+
+.semester-bar{padding:16px 18px;border:1px solid #dfd2bd;border-radius:18px;background:#fffaf0cc;box-shadow:0 5px 0 #eadfca}
+.semester-bar select,.task-dialog select{border:2px solid #d9cbb5;border-radius:12px;background:#fffdf7}
+.action{color:#65584c;border:2px solid #dfd0bb;border-radius:13px;background:#fffdf7;box-shadow:0 4px 0 #e4d5c2}
+.action.primary{color:#fffdf7;border-color:#4f7f62;background:#6ea17e;box-shadow:0 5px 0 #4f765c}
+.action.positive,.positive{color:#315d43;border-color:#9fc5aa;background:#d9eddb;box-shadow:0 4px 0 #b7d4ba}
+.action.negative,.negative{color:#7b4641;border-color:#e5aca9;background:#f9d3d0;box-shadow:0 4px 0 #e6b9b3}
+.text-button,.emphasis{color:#5e8769}
+
+.class-card{border:2px solid #d8ccb8;border-radius:23px;background:#fffdf7;box-shadow:0 7px 0 #ded7c5,0 13px 24px #75654c16}
+.class-card:nth-child(5n+1){background:#fbe7dc;border-color:#e6bbae}
+.class-card:nth-child(5n+2){background:#e3efda;border-color:#b8d0ac}
+.class-card:nth-child(5n+3){background:#fff2c9;border-color:#dfca83}
+.class-card:nth-child(5n+4){background:#dceceb;border-color:#aecfca}
+.class-card:nth-child(5n){background:#f3e3ed;border-color:#d6b9cb}
+.class-icon,.settings-icon{color:#52775d;border:1px solid #a9c3aa;border-radius:16px;background:#f5fbef}
+.class-card b{color:#554a42}
+.class-card small{color:#776e65}
+.class-card strong{color:#5b8566}
+.card-edit{border:1px solid #d7cab8;background:#fffaf1;color:#6c7567;box-shadow:0 3px 0 #dfd2c0}
+
+.masthead{border:2px solid #bfd2b1;border-radius:24px;background:linear-gradient(120deg,#d7e8bd,#c6e1d2 52%,#f6d3c9);box-shadow:0 8px 0 #c8d5b8,0 17px 38px #77684e1f}
+.masthead h1{color:#51473f}
+.masthead .eyebrow{color:#68785f}
+.brand-mark{color:#fffaf1;border:2px solid #fff9ee;background:#6b9a77;box-shadow:0 6px 0 #52775e}
+.class-chip,.save-status{border:1px solid #b8cdb7;background:#fffaf0;color:#55755d;box-shadow:0 3px 0 #cad8c3}
+.main-tabs{border:1px solid #b9cdae;background:#dbe9ca!important;border-radius:16px}
+.main-tabs [data-slot=tabs-trigger]{border-radius:12px;color:#657062;font-weight:800}
+.main-tabs [data-slot=tabs-trigger][data-active],.main-tabs [data-slot=tabs-trigger][aria-selected=true]{color:#fffdf7!important;background:#6c9975!important;box-shadow:0 3px 0 #52765b!important}
+.date-control input{border:2px solid #ddceb9;border-radius:12px;background:#fffdf7;color:#5d5148}
+
+.reward-toolbar,.task-board,.table-panel,.activity-panel,.empty-panel,.settings-card{border:2px solid #ddcfbc;border-radius:21px;background:#fffdf7;box-shadow:0 7px 0 #e6dccb}
+.reward-toolbar input,.task-dialog input,.setup-card input{border:2px solid #ddceb9;border-radius:12px;background:#fffaf2;color:#574c44}
+.student{border:2px solid #dbcdb8;border-radius:18px;background:#fffdf8;box-shadow:0 5px 0 #e3dac9}
+.student:nth-child(4n+1){background:#f9dfdd;border-color:#e3aaa9;box-shadow:0 5px 0 #eabfba}
+.student:nth-child(4n+2){background:#deeddb;border-color:#a9c9a9;box-shadow:0 5px 0 #c4d9bc}
+.student:nth-child(4n+3){background:#fff0bf;border-color:#dfc77d;box-shadow:0 5px 0 #e9d79e}
+.student:nth-child(4n){background:#dcebe8;border-color:#a9c8c2;box-shadow:0 5px 0 #bdd5d0}
+.student-bottom{border-color:#e8dac6;background:#fff8ea}
+.student-bottom button{color:#547861;border:2px solid #b8cfbd;border-radius:10px;background:#fffdf7;box-shadow:0 2px 0 #cfddcc}
+
+.task-sidebar{border:2px solid #d3c07e;border-radius:21px;background:#fff0b9;box-shadow:0 6px 0 #e2d099}
+.task-option{border-radius:13px}
+.task-option.selected{color:#fffdf7;border:2px solid #52785c;background:#6d9b78;box-shadow:0 4px 0 #4f7258}
+.check-card{border:2px solid #dacdbb;border-radius:17px;background:#fffaf1;box-shadow:0 4px 0 #e5dccd}
+.round-grid .check-card.complete{border-color:#83b091;background:#cfe7cd;box-shadow:0 4px 0 #a9cba8}
+.upload-zone{border-color:#9fbfa6;border-radius:16px;background:#eff7e8}
+
+.login-shell,.setup-shell{background:radial-gradient(circle at 18% 18%,#d9e8bb 0 118px,transparent 120px),radial-gradient(circle at 86% 76%,#f2c7c0 0 142px,transparent 144px),linear-gradient(145deg,#dfeccc,#fff7e5 55%,#f3dfc6)}
+.login-card,.setup-card{border:2px solid #d8cbb7;border-radius:28px;background:#fffdf7;box-shadow:0 9px 0 #ded5c4,0 24px 65px #76654a22}
+.login-card::before{content:"🐱  📚";display:block;margin-bottom:12px;font-size:25px;letter-spacing:7px}
+.password-field button{color:#52745c;background:#e6f0df}
+.remember-device small,.login-footnote{color:#7b7067}
+
+@media(max-width:850px){.portal-header::after{right:14px;bottom:12px;font-size:25px;opacity:.55}.portal-header{padding-bottom:68px}.semester-bar{padding:14px}.class-card{border-radius:19px}}
+@media(prefers-reduced-motion:reduce){button{transition:none}}

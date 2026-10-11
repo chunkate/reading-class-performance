@@ -5,4 +5,5 @@ import AuthGate from './components/auth-gate';
 import './app/globals.css';
 import './app/subject.css';
 import './app/archive.css';
+import './app/reading-theme.css';
 createRoot(document.getElementById('root')!).render(<React.StrictMode><AuthGate><Home/></AuthGate></React.StrictMode>);
